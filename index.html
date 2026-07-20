@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberTeson | Expertos en Ciberseguridad</title>
+    
+    <!-- Fuente Inter para un estilo moderno y legible -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (Carga mediante CDN para evitar archivos externos) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // Paleta de colores principal (Modificable aquí)
+                        cyber: {
+                            black: '#0a0a0f',      // Fondo principal, negro profundo
+                            dark: '#11111a',       // Fondo secundario, gris muy oscuro
+                            blue: '#00f0ff',       // Azul neón principal para acentos
+                            blueHover: '#00c3cf',  // Azul neón al hacer hover
+                            gray: '#8a8a9e',       // Texto secundario
+                            white: '#f8f8f2'       // Texto principal
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'], // Usado para toques "hacker"
+                    },
+                    boxShadow: {
+                        'neon': '0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Estilos base y scrollbar */
+        body {
+            background-color: #0a0a0f;
+            color: #f8f8f2;
+            overflow-x: hidden;
+        }
+
+        /* Estilo de la barra de desplazamiento (Scrollbar) */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00f0ff;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00c3cf;
+        }
+
+        /* Efecto de "Glitch" sutil para títulos (opcional, puedes removerlo) */
+        .glitch-hover:hover {
+            animation: glitch-anim 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+            color: #00f0ff;
+        }
+
+        @keyframes glitch-anim {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+
+        /* Fondo de red de puntos para simular "datos" */
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        }
+
+        /* Ocultar secciones no activas para simular navegación entre páginas */
+        .page-section {
+            display: none;
+            min-height: calc(100vh - 80px); /* 80px es aprox la altura del nav */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-cyber-white bg-cyber-black selection:bg-cyber-blue selection:text-cyber-black">
+
+    <!-- Este es el menú superior fijo -->
+    <nav class="fixed w-full z-50 bg-cyber-black/90 backdrop-blur-md border-b border-cyber-blue/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="navigate('inicio')">
+                    <!-- Icono SVG de Escudo -->
+                    <svg class="w-8 h-8 text-cyber-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    <span class="font-mono font-bold text-2xl tracking-tighter text-white">Cyber<span class="text-cyber-blue">Teson</span></span>
+                </div>
+                
+                <!-- Menú Desktop -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <button onclick="navigate('inicio')" class="nav-link active hover:text-cyber-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 uppercase tracking-widest text-cyber-blue border-b-2 border-cyber-blue">Inicio</button>
+                        <button onclick="navigate('servicios')" class="nav-link hover:text-cyber-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 uppercase tracking-widest text-cyber-gray">Servicios</button>
+                        <button onclick="navigate('nosotros')" class="nav-link hover:text-cyber-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 uppercase tracking-widest text-cyber-gray">Quiénes Somos</button>
+                        <button onclick="navigate('mision-vision')" class="nav-link hover:text-cyber-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 uppercase tracking-widest text-cyber-gray">Misión y Visión</button>
+                        <button onclick="navigate('contacto')" class="nav-link hover:bg-cyber-blue hover:text-cyber-black border border-cyber-blue text-cyber-blue px-4 py-2 rounded-md text-sm font-bold transition-all duration-300 shadow-[0_0_10px_rgba(0,240,255,0.2)] hover:shadow-neon uppercase tracking-widest">Contacto</button>
+                    </div>
+                </div>
+
+                <!-- Botón Menú Móvil -->
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" onclick="toggleMobileMenu()" class="inline-flex items-center justify-center p-2 rounded-md text-cyber-gray hover:text-white hover:bg-cyber-dark focus:outline-none" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Abrir menú principal</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menú Móvil Desplegable -->
+        <div class="md:hidden hidden bg-cyber-dark border-b border-cyber-blue/20" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <button onclick="navigate('inicio'); toggleMobileMenu()" class="block w-full text-left text-cyber-blue hover:bg-cyber-black px-3 py-2 rounded-md text-base font-medium">Inicio</button>
+                <button onclick="navigate('servicios'); toggleMobileMenu()" class="block w-full text-left text-cyber-gray hover:text-white hover:bg-cyber-black px-3 py-2 rounded-md text-base font-medium">Servicios</button>
+                <button onclick="navigate('nosotros'); toggleMobileMenu()" class="block w-full text-left text-cyber-gray hover:text-white hover:bg-cyber-black px-3 py-2 rounded-md text-base font-medium">Quiénes Somos</button>
+                <button onclick="navigate('mision-vision'); toggleMobileMenu()" class="block w-full text-left text-cyber-gray hover:text-white hover:bg-cyber-black px-3 py-2 rounded-md text-base font-medium">Misión y Visión</button>
+                <button onclick="navigate('contacto'); toggleMobileMenu()" class="block w-full text-center bg-cyber-blue/10 text-cyber-blue border border-cyber-blue hover:bg-cyber-blue hover:text-cyber-black px-3 py-2 rounded-md text-base font-bold mt-4">Contacto</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenedor Principal (Debajo del menú) -->
+    <main class="pt-20 bg-grid relative">
+        <!-- Overlay oscuro para atenuar la red de puntos -->
+        <div class="absolute inset-0 bg-cyber-black/80 z-0 pointer-events-none"></div>
+
+        <!-- ============================================== -->
+        <section id="inicio" class="page-section active relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center min-h-[calc(100vh-80px)] py-12">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    
+                    <!-- Texto de Introducción -->
+                    <div>
+                        <div class="inline-block px-3 py-1 mb-6 rounded-full bg-cyber-blue/10 border border-cyber-blue/30 text-cyber-blue font-mono text-sm">
+                            &gt; SISTEMA_SEGURO_ACTIVO
+                        </div>
+                        <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6">
+                            Protege tu <br/>
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-blue to-blue-500">Futuro Digital</span>
+                        </h1>
+                        <p class="text-xl text-cyber-gray mb-8 max-w-lg leading-relaxed">
+                            Defensa proactiva contra amenazas avanzadas. Aseguramos tus datos, tu infraestructura y tu tranquilidad operativa en un mundo hiperconectado.
+                        </p>
+                        
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button onclick="navigate('servicios')" class="px-8 py-4 bg-cyber-blue text-cyber-black font-bold rounded-md hover:bg-cyber-blueHover transition-colors shadow-neon">
+                                Ver Soluciones
+                            </button>
+                            <button onclick="navigate('contacto')" class="px-8 py-4 bg-transparent border border-cyber-gray text-white font-semibold rounded-md hover:border-cyber-blue hover:text-cyber-blue transition-colors flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                Solicitar Auditoría
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Elemento Visual Decorativo -->
+                    <div class="relative hidden lg:block">
+                        <!-- Círculos decorativos concéntricos -->
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-cyber-blue/20 rounded-full animate-[spin_10s_linear_infinite]"></div>
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 border border-cyber-blue/40 rounded-full border-dashed animate-[spin_15s_linear_infinite_reverse]"></div>
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyber-blue/5 rounded-full backdrop-blur-sm border border-cyber-blue/50 flex items-center justify-center shadow-neon">
+                            <!-- Icono Central Grande -->
+                            <svg class="w-24 h-24 text-cyber-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+                            </svg>
+                        </div>
+                        
+                        <!-- Tarjeta flotante simulando datos -->
+                        <div class="absolute bottom-10 right-10 bg-cyber-dark border border-cyber-blue/30 p-4 rounded-lg shadow-lg backdrop-blur-md animate-bounce" style="animation-duration: 3s;">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                                <span class="font-mono text-sm text-cyber-gray">Red Segura</span>
+                            </div>
+                            <div class="mt-2 text-xs text-cyber-blue font-mono">
+                                Amenazas bloqueadas: 9,842
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Logos de empresas clientes simulados -->
+            <div class="border-t border-cyber-blue/10 bg-cyber-black/50 py-8 mt-12">
+                <div class="max-w-7xl mx-auto px-4 text-center">
+                    <p class="text-sm font-mono text-cyber-gray mb-6 uppercase tracking-widest">Sistemas protegidos por nosotros</p>
+                    <div class="flex flex-wrap justify-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+                        <span class="font-bold text-xl flex items-center gap-1"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 11V7a2 2 0 114 0v4h-4zm-2 2h8v-1a2 2 0 00-4 0v1H6v-1z"></path></svg> TechCorp</span>
+                        <span class="font-bold text-xl flex items-center gap-1"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"></path></svg> GlobalBank</span>
+                        <span class="font-bold text-xl flex items-center gap-1"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.759-2.159 4.5 4.5 0 11-7.39 9.139z"></path></svg> CloudNet</span>
+                        <span class="font-bold text-xl flex items-center gap-1"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z"></path></svg> InnovaData</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <section id="servicios" class="page-section relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+                
+                <div class="text-center mb-16">
+                    <h2 class="font-mono text-cyber-blue mb-2 tracking-widest uppercase">&lt; Soluciones /&gt;</h2>
+                    <h3 class="text-4xl md:text-5xl font-bold">Nuestros Servicios</h3>
+                    <p class="mt-4 text-cyber-gray max-w-2xl mx-auto text-lg">
+                        Protección integral en cada capa de tu infraestructura tecnológica.
+                    </p>
+                </div>
+
+                <!-- Grid de Servicios -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Tarjeta de Servicio 1 -->
+                    <div class="bg-cyber-dark border border-cyber-blue/20 rounded-xl p-8 hover:border-cyber-blue transition-all duration-300 group hover:-translate-y-2 hover:shadow-neon">
+                        <div class="w-14 h-14 bg-cyber-blue/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-cyber-blue/20 transition-colors">
+                            <svg class="w-8 h-8 text-cyber-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3 text-white">Auditoría y Pentesting</h4>
+                        <p class="text-cyber-gray leading-relaxed mb-6">
+                            Simulamos ataques reales para identificar vulnerabilidades antes de que los cibercriminales lo hagan. Evaluamos redes, aplicaciones web y móviles.
+                        </p>
+                        <ul class="text-sm font-mono text-cyber-gray space-y-2">
+                            <li class="flex items-center gap-2"><span class="text-cyber-blue">✓</span> Pruebas de caja negra/blanca</li>
+                            <li class="flex items-center gap-2"><span class="text-cyber-blue">✓</span> Análisis de código fuente</li>
+                            <li class="flex items-center gap-2"><span class="text-cyber-blue">✓</span> Reportes detallados</li>
+                        </ul>
+                    </div>
+
+                    <!-- Tarjeta de Servicio 2 -->
+                    <div class="bg-cyber-dark border border-cyber-blue/20 rounded-xl p-8 hover:border-cyber-blue transition-all duration-300 group hover:-translate-y-2 hover:shadow-neon">
+                        <div class="w-14 h-14 bg-cyber-blue/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-cyber-blue/20 transition-colors">
+                            <svg class="w-8 h-8 text-cyber-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3 text-white">Monitoreo SOC 24/7</h4>
+                        <p class="text-cyber-gray leading-relaxed mb-6">
+                            Centro de Operaciones de Seguridad en tiempo real. Detectamos anomalías e intrusiones al instante, respondiendo de forma automatizada.
+                        </p>
+                        <ul class="text-sm font-mono text-cyber-gray space-y-2">
+                            <li class="flex items-center gap-2"><span class="text-cyber-blue">✓</span> Análisis de tráfico de red</li>
+                            <li class="flex items-center gap-2"><span class="text-cyber-blue">✓</span> Detección de malware avanzado</li>
+                            <li class="flex items-center gap-2"><span class="text-cyber-blue">✓</span> Alertas instantáneas</li>
+                        </ul>
+                    </div>
+
+                    <!-- Tarjeta de Servicio 3 -->
+                    <div class="bg-cyber-dark border border-cyber-blue/20 rounded-xl p-8 hover:border-cyber-blue transition-all duration-300 group hover:-translate-y-2 hover:shadow-neon">
+                        <div class="w-14 h-14 bg-cyber-blue/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-cyber-blue/20 transition-colors">
+                            <svg class="w-8 h-8 text-cyber-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3 text-white">Criptografía y Datos</h4>
+                        <p class="text-cyber-gray leading-relaxed mb-6">
+                            Implementación de protocolos de encriptación de grado militar para proteger información sensible tanto en tránsito como en reposo.
+                        </p>
+                        <ul class="text-sm font-mono text-cyber-gray space-y-2">
+                            <li class="flex items-center gap-2"><span class="text-cyber-blue">✓</span> Cifrado de bases de datos</li>
+                            <li class="flex items-center gap-2"><span class="text-cyber-blue">✓</span> Gestión de certificados</li>
+                            <li class="flex items-center gap-2"><span class="text-cyber-blue">✓</span> VPNs corporativas seguras</li>
+                        </ul>
+                    </div>
+
+                    <!-- Se pueden agregar más tarjetas siguiendo este formato -->
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <section id="nosotros" class="page-section relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+                
+                <div class="flex flex-col lg:flex-row gap-16 items-center">
+                    
+                    <!-- Imagen/Elemento visual -->
+                    <div class="w-full lg:w-1/2 relative">
+                        <!-- Marco decorativo estilo hacker -->
+                        <div class="absolute -inset-4 border border-cyber-blue/30 rounded-lg transform -skew-y-3 z-0"></div>
+                        <div class="absolute -inset-4 border border-cyber-blue/10 bg-cyber-dark/50 rounded-lg transform skew-y-2 z-0 backdrop-blur-sm"></div>
+                        
+                        <div class="relative z-10 bg-cyber-black border border-cyber-blue/50 rounded-lg overflow-hidden shadow-neon aspect-video flex flex-col">
+                            <!-- Barra superior de "consola" -->
+                            <div class="bg-cyber-dark border-b border-cyber-blue/30 px-4 py-2 flex gap-2 items-center">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                <span class="ml-2 font-mono text-xs text-cyber-gray">root@cyberTeson:~#</span>
+                            </div>
+                            <!-- Contenido de consola simulado -->
+                            <div class="p-6 font-mono text-sm text-green-400 overflow-hidden flex-grow">
+                                <p class="mb-2">> Ejecutando análisis de identidad...</p>
+                                <p class="mb-2">> Cargando módulos de equipo_core.sh</p>
+                                <p class="mb-2">> <span class="text-cyber-blue">STATUS: ONLINE</span></p>
+                                <p class="mb-2 text-cyber-gray">Fundados en 2018, nacimos de la necesidad de democratizar la seguridad de nivel empresarial.</p>
+                                <p class="mt-4 animate-pulse">_</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contenido de texto -->
+                    <div class="w-full lg:w-1/2">
+                        <h2 class="font-mono text-cyber-blue mb-2 tracking-widest uppercase">&lt; Identidad /&gt;</h2>
+                        <h3 class="text-4xl md:text-5xl font-bold mb-6">Nuestra Misión: Tu Seguridad</h3>
+                        
+                        <div class="space-y-6 text-cyber-gray text-lg leading-relaxed">
+                            <p>
+                                CyberTeson está compuesto por un equipo de <strong class="text-white">hackers éticos, ingenieros de sistemas y estrategas de seguridad</strong> obsesionados con mantenerse un paso por delante de las amenazas digitales.
+                            </p>
+                            <p>
+                                No vendemos software de caja; ofrecemos inteligencia, análisis y soluciones a medida porque sabemos que cada infraestructura es única. Nuestra filosofía se basa en la filosofía "Zero Trust" (Confianza Cero).
+                            </p>
+                        </div>
+
+                        <!-- Estadísticas Rápidas -->
+                        <div class="grid grid-cols-2 gap-6 mt-10 border-t border-cyber-blue/20 pt-8">
+                            <div>
+                                <div class="text-4xl font-bold text-cyber-blue font-mono mb-1">500+</div>
+                                <div class="text-sm uppercase tracking-wider text-cyber-gray">Vulnerabilidades Cerradas</div>
+                            </div>
+                            <div>
+                                <div class="text-4xl font-bold text-cyber-blue font-mono mb-1">99.9%</div>
+                                <div class="text-sm uppercase tracking-wider text-cyber-gray">Uptime Asegurado</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <section id="mision-vision" class="page-section relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+                
+                <div class="text-center mb-16">
+                    <h2 class="font-mono text-cyber-blue mb-2 tracking-widest uppercase">&lt; Propósito /&gt;</h2>
+                    <h3 class="text-4xl md:text-5xl font-bold">Misión y Visión</h3>
+                    <p class="mt-4 text-cyber-gray max-w-2xl mx-auto text-lg">
+                        Los pilares fundamentales que guían nuestras operaciones y definen nuestro futuro en el ciberespacio.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    
+                    <!-- Tarjeta Misión -->
+                    <div class="bg-cyber-dark border border-cyber-blue/30 rounded-xl p-10 relative overflow-hidden group hover:border-cyber-blue transition-all duration-300 hover:shadow-neon hover:-translate-y-1">
+                        <!-- Efecto de fondo -->
+                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-cyber-blue/5 rounded-full blur-3xl group-hover:bg-cyber-blue/20 transition-colors duration-500"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="w-16 h-16 bg-cyber-black border border-cyber-blue/50 rounded-lg flex items-center justify-center mb-8 shadow-[0_0_10px_rgba(0,240,255,0.1)] group-hover:shadow-neon transition-all">
+                                <svg class="w-8 h-8 text-cyber-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </div>
+                            <h4 class="text-3xl font-bold mb-4 text-white">Nuestra Misión</h4>
+                            <p class="text-cyber-gray text-lg leading-relaxed mb-6">
+                                Proveer escudos digitales impenetrables y estrategias de ciberseguridad ofensiva y defensiva de primer nivel. Nos dedicamos a salvaguardar los activos críticos de nuestros clientes, garantizando la continuidad de sus operaciones en un entorno digital cada vez más hostil mediante inteligencia artificial y talento excepcional.
+                            </p>
+                            <div class="border-t border-cyber-blue/20 pt-4">
+                                <span class="font-mono text-sm text-cyber-blue uppercase tracking-wider">01 // Ejecución Activa</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta Visión -->
+                    <div class="bg-cyber-dark border border-cyber-blue/30 rounded-xl p-10 relative overflow-hidden group hover:border-cyber-blue transition-all duration-300 hover:shadow-neon hover:-translate-y-1">
+                        <!-- Efecto de fondo -->
+                        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-cyber-blue/5 rounded-full blur-3xl group-hover:bg-cyber-blue/20 transition-colors duration-500"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="w-16 h-16 bg-cyber-black border border-cyber-blue/50 rounded-lg flex items-center justify-center mb-8 shadow-[0_0_10px_rgba(0,240,255,0.1)] group-hover:shadow-neon transition-all">
+                                <svg class="w-8 h-8 text-cyber-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </div>
+                            <h4 class="text-3xl font-bold mb-4 text-white">Nuestra Visión</h4>
+                            <p class="text-cyber-gray text-lg leading-relaxed mb-6">
+                                Convertirnos en el estándar global de confianza y seguridad cibernética. Visualizamos un ecosistema digital donde las empresas puedan innovar sin temor a ciberataques, liderando la investigación en contramedidas tecnológicas y formando a la próxima generación de expertos en seguridad de la información.
+                            </p>
+                            <div class="border-t border-cyber-blue/20 pt-4">
+                                <span class="font-mono text-sm text-cyber-blue uppercase tracking-wider">02 // Proyección Futura</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <section id="contacto" class="page-section relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+                
+                <div class="text-center mb-16">
+                    <h2 class="font-mono text-cyber-blue mb-2 tracking-widest uppercase">&lt; Comunicación Segura /&gt;</h2>
+                    <h3 class="text-4xl md:text-5xl font-bold">Establecer Conexión</h3>
+                    <p class="mt-4 text-cyber-gray max-w-2xl mx-auto text-lg">
+                        Inicia un canal cifrado con nuestro equipo. Responderemos en menos de 24 horas.
+                    </p>
+                </div>
+
+                <div class="max-w-3xl mx-auto bg-cyber-dark border border-cyber-blue/30 rounded-xl overflow-hidden shadow-lg">
+                    
+                    <!-- Formulario -->
+                    <form onsubmit="submitForm(event)" class="p-8 md:p-12">
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <!-- Nombre -->
+                            <div>
+                                <label for="nombre" class="block text-sm font-mono text-cyber-gray mb-2">Nombre / Alias</label>
+                                <input type="text" id="nombre" required
+                                    class="w-full bg-cyber-black border border-cyber-gray/50 rounded-md px-4 py-3 text-white focus:outline-none focus:border-cyber-blue focus:ring-1 focus:ring-cyber-blue transition-colors font-mono">
+                            </div>
+                            
+                            <!-- Email -->
+                            <div>
+                                <label for="email" class="block text-sm font-mono text-cyber-gray mb-2">Email de Contacto</label>
+                                <input type="email" id="email" required
+                                    class="w-full bg-cyber-black border border-cyber-gray/50 rounded-md px-4 py-3 text-white focus:outline-none focus:border-cyber-blue focus:ring-1 focus:ring-cyber-blue transition-colors font-mono">
+                            </div>
+                        </div>
+
+                        <!-- Asunto -->
+                        <div class="mb-6">
+                            <label for="asunto" class="block text-sm font-mono text-cyber-gray mb-2">Nivel de Prioridad / Asunto</label>
+                            <select id="asunto" class="w-full bg-cyber-black border border-cyber-gray/50 rounded-md px-4 py-3 text-white focus:outline-none focus:border-cyber-blue focus:ring-1 focus:ring-cyber-blue transition-colors font-mono appearance-none">
+                                <option value="consulta">Consulta General</option>
+                                <option value="auditoria">Solicitud de Auditoría</option>
+                                <option value="incidente" class="text-red-500 font-bold">¡Incidente de Seguridad Activo!</option>
+                            </select>
+                        </div>
+
+                        <!-- Mensaje -->
+                        <div class="mb-8">
+                            <label for="mensaje" class="block text-sm font-mono text-cyber-gray mb-2">Cuerpo del Mensaje (Datos de la red)</label>
+                            <textarea id="mensaje" rows="5" required
+                                class="w-full bg-cyber-black border border-cyber-gray/50 rounded-md px-4 py-3 text-white focus:outline-none focus:border-cyber-blue focus:ring-1 focus:ring-cyber-blue transition-colors font-mono resize-none"></textarea>
+                        </div>
+
+                        <!-- Botón Submit -->
+                        <button type="submit" class="w-full bg-cyber-blue text-cyber-black font-bold text-lg py-4 rounded-md hover:bg-cyber-blueHover transition-colors shadow-neon flex items-center justify-center gap-2 group">
+                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                            Transimitir Datos
+                        </button>
+                    </form>
+                    
+                    <!-- Mensaje de éxito (oculto por defecto) -->
+                    <div id="success-message" class="hidden bg-green-500/10 border-t border-green-500/50 p-6 text-center">
+                        <svg class="w-12 h-12 text-green-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <h4 class="text-xl font-bold text-green-400 mb-1">Transmisión Exitosa</h4>
+                        <p class="text-cyber-gray font-mono text-sm">Mensaje encriptado y recibido por nuestros servidores.</p>
+                        <button onclick="resetForm()" class="mt-4 text-sm text-cyber-blue hover:underline">Enviar otro mensaje</button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-cyber-black border-t border-cyber-blue/20 py-8 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2">
+                <svg class="w-6 h-6 text-cyber-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                <span class="font-mono font-bold text-xl text-white">Cyber<span class="text-cyber-blue">Teson</span></span>
+            </div>
+            <p class="text-cyber-gray text-sm font-mono text-center md:text-left">
+                &copy; <span id="year"></span> CyberTeson Inc. Todos los derechos reservados. Red Segura.
+            </p>
+            <div class="flex gap-4">
+                <!-- Redes sociales simuladas (Solo iconos) -->
+                <a href="#" class="text-cyber-gray hover:text-cyber-blue transition-colors">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                </a>
+                <a href="#" class="text-cyber-gray hover:text-cyber-blue transition-colors">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Actualizar año en el footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Lógica de Navegación "Single Page Application" (SPA)
+        function navigate(pageId) {
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(sec => sec.classList.remove('active'));
+
+            // Mostrar la sección seleccionada
+            const activeSection = document.getElementById(pageId);
+            if (activeSection) {
+                activeSection.classList.add('active');
+            }
+
+            // Actualizar el estado del menú
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                // Resetear estilos base
+                link.classList.remove('text-cyber-blue', 'border-b-2', 'border-cyber-blue');
+                link.classList.add('text-cyber-gray');
+                
+                // Excepción para el botón de contacto que tiene un estilo diferente
+                if(!link.classList.contains('border')) {
+                     link.classList.add('hover:text-cyber-blue');
+                }
+            });
+
+            // Encontrar el botón que fue clickeado (basado en el texto para simplificar en este ejemplo)
+            const clickedLinks = Array.from(navLinks).filter(link => 
+                link.textContent.toLowerCase().includes(pageId) || 
+                (pageId === 'nosotros' && link.textContent.toLowerCase().includes('quiénes')) ||
+                (pageId === 'mision-vision' && link.textContent.toLowerCase().includes('misión'))
+            );
+
+            if (clickedLinks.length > 0 && !clickedLinks[0].classList.contains('border')) {
+                clickedLinks[0].classList.remove('text-cyber-gray');
+                clickedLinks[0].classList.add('text-cyber-blue', 'border-b-2', 'border-cyber-blue');
+            }
+
+            // Hacer scroll hacia arriba suavemente
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Toggle para menú móvil
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // Lógica del Formulario de Contacto
+        function submitForm(event) {
+            event.preventDefault(); // Evitar recarga de página
+
+            const form = event.target;
+            const successMsg = document.getElementById('success-message');
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            // Simular un retraso de "envío" (1.5 segundos)
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Encriptando...';
+            submitBtn.disabled = true;
+
+            setTimeout(() => {
+                form.style.display = 'none';
+                successMsg.classList.remove('hidden');
+                successMsg.classList.add('block');
+                
+                // Resetear botón por si vuelve a aparecer
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+                form.reset();
+            }, 1500);
+        }
+
+        // Volver a mostrar el formulario tras un envío
+        function resetForm() {
+            const form = document.querySelector('form');
+            const successMsg = document.getElementById('success-message');
+            
+            successMsg.classList.remove('block');
+            successMsg.classList.add('hidden');
+            form.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
